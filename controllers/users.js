@@ -23,7 +23,7 @@ const getUser = (req, res) => {
       if (err.name === "CastError") {
         return res
           .status(INVALID_DATA)
-          .send({ message: "Invalid user ID format." });
+          .send({ message: "Invalid data provided." });
       }
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: "User not found." });
@@ -44,7 +44,7 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(INVALID_DATA)
-          .send({ message: "Invalid user data provided." });
+          .send({ message: "Invalid data provided." });
       }
       return res
         .status(SERVER_ERROR)

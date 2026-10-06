@@ -23,7 +23,7 @@ const createClothingItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(INVALID_DATA)
-          .send({ message: "Invalid clothing item data provided." });
+          .send({ message: "Invalid data provided." });
       }
       return res
         .status(SERVER_ERROR)
@@ -42,7 +42,7 @@ const deleteClothingItem = (req, res) => {
       if (err.name === "CastError") {
         return res
           .status(INVALID_DATA)
-          .send({ message: "Invalid clothing item ID format." });
+          .send({ message: "Invalid data provided." });
       }
       if (err.name === "DocumentNotFoundError") {
         return res
@@ -68,7 +68,7 @@ const likeItem = (req, res) => {
       if (err.name === "CastError") {
         return res
           .status(INVALID_DATA)
-          .send({ message: "Invalid clothing item ID format." });
+          .send({ message: "Invalid data provided." });
       }
       if (err.name === "DocumentNotFoundError") {
         return res
@@ -94,7 +94,7 @@ const dislikeItem = (req, res) => {
       if (err.name === "CastError") {
         return res
           .status(INVALID_DATA)
-          .send({ message: "Invalid clothing item ID format." });
+          .send({ message: "Invalid data provided." });
       }
       if (err.name === "DocumentNotFoundError") {
         return res
