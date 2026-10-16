@@ -1,9 +1,15 @@
 const INVALID_DATA = 400;
+const UNAUTHORIZED = 401;
+const FORBIDDEN = 403;
 const NOT_FOUND = 404;
+const CONFLICT = 409;
 const SERVER_ERROR = 500;
 
 module.exports = {
   INVALID_DATA,
   NOT_FOUND,
   SERVER_ERROR,
+  CONFLICT,
+  UNAUTHORIZED,
+  FORBIDDEN,
 };

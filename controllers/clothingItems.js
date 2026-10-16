@@ -1,5 +1,10 @@
 const ClothingItem = require("../models/clothingItem");
-const { INVALID_DATA, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
+const {
+  INVALID_DATA,
+  NOT_FOUND,
+  SERVER_ERROR,
+  FORBIDDEN,
+} = require("../utils/errors");
 
 const getClothingItems = (req, res) => {
   ClothingItem.find({})
@@ -34,9 +39,25 @@ const createClothingItem = (req, res) => {
 const deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
 
-  ClothingItem.findByIdAndDelete(itemId)
+  ClothingItem.findById(itemId)
     .orFail()
-    .then(() => res.send({ message: "Clothing item deleted successfully." }))
+    .then((clothingItem) => {
+      if (req.user._id.toString() === clothingItem.owner.toString()) {
+        return ClothingItem.findByIdAndDelete(itemId)
+          .then(() =>
+            res.send({ message: "Clothing item deleted successfully." })
+          )
+          .catch((err) => {
+            console.error(err);
+            return res
+              .status(SERVER_ERROR)
+              .send({ message: "An error has occurred on the server." });
+          });
+      }
+      return res.status(FORBIDDEN).send({
+        message: "You are not authorized to delete this clothing item.",
+      });
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
