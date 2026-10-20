@@ -10,17 +10,6 @@ const {
   UNAUTHORIZED,
 } = require("../utils/errors");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server." });
-    });
-};
-
 const getCurrentUser = (req, res) => {
   const { _id } = req.user;
 
@@ -46,7 +35,13 @@ const getCurrentUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
-  bcrypt
+  if (!email || !password) {
+    return res
+      .status(INVALID_DATA)
+      .send({ message: "Email and password are required." });
+  }
+
+  return bcrypt
     .hash(password, 10)
     .then((hash) =>
       User.create({ name, avatar, email, password: hash })
@@ -137,7 +132,6 @@ const updateUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   getCurrentUser,
   createUser,
   userLogin,
