@@ -25,3 +25,8 @@ The back-end project is focused on creating a server for the WTWR application. Y
 - **Error handling**: consistent JSON error messages for invalid data (400), missing resources (404), and server errors (500)
 - **Data validation**: Mongoose schemas enforce required fields, length limits, valid weather types (hot, warm, cold), and valid URLs
 - **Temporary authorization**: a placeholder middleware attaches a test user to each request until real authentication is added
+
+## Project Pitch Video
+
+Check out [this video](https://drive.google.com/file/d/1y6q43th_nbFqp_CpnlJeeFvl_fUByDJM/view?usp=sharing), where I describe my
+project and some challenges I faced while building it.
