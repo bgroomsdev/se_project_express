@@ -1,8 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
 const { createUser, userLogin } = require("./controllers/users");
+const errorHandler = require("./middlewares/error-handler");
+const { validateUser, validateUserLogin } = require("./middlewares/validation");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 
@@ -18,7 +22,14 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 
 app.use(express.json());
 
-app.post("/signin", userLogin);
-app.post("/signup", createUser);
+app.use(requestLogger);
+
+app.post("/signin", validateUserLogin, userLogin);
+app.post("/signup", validateUser, createUser);
 
 app.use("/", mainRouter);
+
+app.use(errorLogger);
+
+app.use(errors());
+app.use(errorHandler);
