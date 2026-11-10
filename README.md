@@ -9,7 +9,7 @@ The back end for the WTWR application, a weather-based clothing recommendation a
 
 ## Links
 
-- [Project pitch video](https://drive.google.com/file/d/1y6q43th_nbFqp_CpnlJeeFvl_fUByDJM/view?usp=sharing): a walkthrough of the project and some challenges I faced while building it.
+- [Project pitch video](https://drive.google.com/file/d/1JhASO7OPIskYp7B0Rn9mB0iSfvV9SDrD/view?usp=sharing): a walkthrough of the project and some challenges I faced while building it.
 - [Front-end repository](https://github.com/bgroomsdev/se_project_react)
 
 ## Features
