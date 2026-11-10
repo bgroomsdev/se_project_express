@@ -1,32 +1,81 @@
 # WTWR (What to Wear?): Back End
 
-The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
+The back end for the WTWR application, a weather-based clothing recommendation app. It is an Express server with a MongoDB database, a REST API, and JWT-based user authorization, deployed on a remote Linux VM behind nginx with HTTPS.
 
-## Running the Project
+## Deployed Project
 
-`npm run start` — to launch the server
+- Frontend: https://wtwrsub.okzk.com
+- API: https://api.wtwrsub.okzk.com
 
-`npm run dev` — to launch the server with the hot reload feature
+## Links
+
+- [Project pitch video](https://drive.google.com/file/d/1y6q43th_nbFqp_CpnlJeeFvl_fUByDJM/view?usp=sharing): a walkthrough of the project and some challenges I faced while building it.
+- [Front-end repository](https://github.com/bgroomsdev/se_project_react)
+
+## Features
+
+- **Authentication**: sign up and sign in; passwords are hashed and a JWT is issued on sign in
+- **Authorization**: protected routes require a valid token in the `Authorization` header
+- **Users**: get and update the current user's profile (name and avatar)
+- **Clothing items**: get all items, create an item, and delete an item (only the owner can delete)
+- **Likes**: like and unlike an item, with no duplicate likes per user
+- **Validation**: request validation and Mongoose schemas enforce required fields, length limits, valid weather types (hot, warm, cold), and valid URLs
+- **Error handling**: a centralized handler with custom error classes (`BadRequestError` 400, `UnauthorizedError` 401, `ForbiddenError` 403, `NotFoundError` 404, `ConflictError` 409) returns consistent JSON errors in the form `{ "message": "..." }`; unexpected errors return 500 with a generic message so internal details are never exposed
+- **Logging**: request and error logs
+
+## API Routes
+
+| Method | Route                  | Auth | Description                               |
+| ------ | ---------------------- | ---- | ----------------------------------------- |
+| POST   | `/signup`              | No   | Create a new user                         |
+| POST   | `/signin`              | No   | Sign in and receive a JWT                 |
+| GET    | `/items`               | No   | Get all clothing items                    |
+| POST   | `/items`               | Yes  | Create a clothing item                    |
+| DELETE | `/items/:itemId`       | Yes  | Delete an item you own                    |
+| PUT    | `/items/:itemId/likes` | Yes  | Like an item                              |
+| DELETE | `/items/:itemId/likes` | Yes  | Remove your like                          |
+| GET    | `/users/me`            | Yes  | Get the current user                      |
+| PATCH  | `/users/me`            | Yes  | Update the current user's name and avater |
 
 ## Technologies
 
 - **Express**: web server and routing
 - **MongoDB / Mongoose**: database and data models
-- **validator**: URL validation for avatar and image fields
-- **ESLint** with the Airbnb config: code quality and style
-- **Prettier**: code formatting
-- **Nodemon**: automatic server restarts during development
+- **bcryptjs**: password hashing
+- **jsonwebtoken**: token-based authorization
+- **dotenv**: loads environment variables from `.env`
+- **cors**: cross-origin requests from the front end
+- **celebrate / Joi**: request validation
+- **validator**: URL and email validation
+- **winston / express-winston**: request and error logging
+- **ESLint** (Airbnb config) and **Prettier**: code quality and formatting
+- **Nodemon**: automatic restarts during development
+- **nginx**, **pm2**, and **Let's Encrypt (Certbot)**: reverse proxy, process management, and HTTPS on the VM
 
-## Features
+## Running the Project Locally
 
-- **Users**: create a user, get all users, and get a user by ID
-- **Clothing items**: create an item, get all items, and delete an item by ID
-- **Likes**: like and unlike an item, with no duplicate likes per user
-- **Error handling**: consistent JSON error messages for invalid data (400), missing resources (404), and server errors (500)
-- **Data validation**: Mongoose schemas enforce required fields, length limits, valid weather types (hot, warm, cold), and valid URLs
-- **Temporary authorization**: a placeholder middleware attaches a test user to each request until real authentication is added
+1. Install dependencies:
 
-## Project Pitch Video
+   ```bash
+   npm install
+   ```
 
-Check out [this video](https://drive.google.com/file/d/1y6q43th_nbFqp_CpnlJeeFvl_fUByDJM/view?usp=sharing), where I describe my
-project and some challenges I faced while building it.
+2. Make sure MongoDB is running locally. The server connects to `mongodb://127.0.0.1:27017/wtwr_db`.
+
+3. Create a `.env` file in the project root:
+
+   ```
+   JWT_SECRET=your-secret-here
+   ```
+
+4. Start the server:
+
+   `npm run start` launches the server.
+
+   `npm run dev` launches the server with hot reload.
+
+The server listens on port 3001 by default, or on the port set in the `PORT` environment variable.
+
+## Deployment
+
+The API runs on a Google Cloud VM. nginx proxies `api.wtwrsub.okzk.com` to the Node server on port 3001 and serves the front end's static files on `wtwrsub.okzk.com`. HTTPS certificates come from Let's Encrypt, and pm2 keeps the server running.
